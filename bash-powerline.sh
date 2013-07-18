@@ -63,13 +63,14 @@ __powerline() {
         local marks
 
         # branch is modified
-        [ -n "$(git status --porcelain)" ] && marks+=$GIT_BRANCH_CHANGED_SYMBOL
+        [ -n "$(git status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
 
-        # local branch is ahead of remote
-        [ -n "$(git rev-list HEAD --not --remotes)" ] && marks+=$GIT_NEED_PUSH_SYMBOL   
-
-        # space between branch name and marks if marks is not empty
-        [ -n "$marks" ] && marks=" $marks"
+        # check if local branch is ahead/behind of remote and by how many commits
+        local remote="$(git config branch.$branch.remote)"
+        local pushN="$(git rev-list $remote..HEAD|wc -l|tr -d ' ')"
+        local pullN="$(git rev-list HEAD..$remote|wc -l|tr -d ' ')"
+        [ "$pushN" != "0" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$pushN"
+        [ "$pullN" != "0" ] && marks+=" $GIT_NEED_PULL_SYMBOL$pullN"
 
         # print the git branch segment without a trailing newline
         printf " $GIT_BRANCH_SYMBOL$branch$marks "

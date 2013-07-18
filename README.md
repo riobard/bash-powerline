@@ -10,6 +10,7 @@ Powerline for Bash in pure Bash script.
   is detached
 * Git branch: display "+" symbol when current branch is changed
 * Git branch: display "⇡" symbol when the current branch is ahead of remote
+* Git branch: display "⇣" symbol when the current branch is behind of remote
 * Platform-dependent prompt symbol for OS X and Linux (see screenshots)
 * Color code for the previously failed command
 * Fast execution (no noticable delay)
@@ -46,12 +47,6 @@ The other issue is that I don't like the idea of requiring patched fonts for
 this to work. The font patching mechanism from the original Powerline does not
 work with the bitmap font (Apple Monaco without anti-aliasing) I use on
 non-retina screens. I'd rather stick with existing unicode symbols in the fonts.
-
-
-## Todo
-
-* Display "⇣" when current git branch is behind of remote (need a reliable way
-  to detect git state)
 
 
 ## See also
