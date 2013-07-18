@@ -2,16 +2,16 @@
 
 Powerline for Bash in pure Bash script. 
 
+![bash-powerline](https://raw.github.com/riobard/bash-powerline/master/screenshots/bash-powerline.png)
+
 ## Features
 
 * Git branch status: display symbols when current branch is changed, and when
   the current branch is ahead/behind of remote. 
 * Platform-dependent prompt symbol (see screenshots).
+* Color code for the previously failed command.
 * Fast execution (no noticable delay).
 * No need for patched fonts. 
-
-## Screenshots
-
 
 ## Why?
 
@@ -25,3 +25,5 @@ Powerline for Bash in pure Bash script.
 * [powerline-shell](https://github.com/milkbikis/powerline-shell): Powerline for
   Bash/Zsh/Fish implemented in Python. Might be merged into the unified
   Powerline. 
+* [emacs powerline](https://github.com/milkypostman/powerline): Powerline for
+  Emacs
