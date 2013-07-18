@@ -6,12 +6,14 @@ Powerline for Bash in pure Bash script.
 
 ## Features
 
-* Git branch status: display "+" symbol when current branch is changed, and "⇡"
-  symbol when the current branch is ahead of remote. 
-* Platform-dependent prompt symbol (see screenshots).
-* Color code for the previously failed command.
-* Fast execution (no noticable delay).
-* No need for patched fonts. 
+* Git branch: display current git branch name, or short SHA1 hash when the head
+  is detached
+* Git branch: display "+" symbol when current branch is changed
+* Git branch: display "⇡" symbol when the current branch is ahead of remote
+* Platform-dependent prompt symbol for OS X and Linux (see screenshots)
+* Color code for the previously failed command
+* Fast execution (no noticable delay)
+* No need for patched fonts
 
 
 ## Installation
