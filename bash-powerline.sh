@@ -66,11 +66,17 @@ __powerline() {
         [ -n "$(git status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
 
         # check if local branch is ahead/behind of remote and by how many commits
+        # Shamelessly copied from http://stackoverflow.com/questions/2969214/git-programmatically-know-by-how-much-the-branch-is-ahead-behind-a-remote-branc
         local remote="$(git config branch.$branch.remote)"
-        local pushN="$(git rev-list $remote..HEAD|wc -l|tr -d ' ')"
-        local pullN="$(git rev-list HEAD..$remote|wc -l|tr -d ' ')"
-        [ "$pushN" != "0" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$pushN"
-        [ "$pullN" != "0" ] && marks+=" $GIT_NEED_PULL_SYMBOL$pullN"
+        local remote_ref="$(git config branch.$branch.merge)"
+        local remote_branch="${remote_ref##refs/heads/}"
+        local tracking_branch="refs/remotes/$remote/$remote_branch"
+        if [ -n "$remote" ]; then
+            local pushN="$(git rev-list $tracking_branch..HEAD|wc -l|tr -d ' ')"
+            local pullN="$(git rev-list HEAD..$tracking_branch|wc -l|tr -d ' ')"
+            [ "$pushN" != "0" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$pushN"
+            [ "$pullN" != "0" ] && marks+=" $GIT_NEED_PULL_SYMBOL$pullN"
+        fi
 
         # print the git branch segment without a trailing newline
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
