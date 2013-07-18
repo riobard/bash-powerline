@@ -32,12 +32,19 @@ easy.
 
 ## Why?
 
-This simple script is inspired by
-[powerline-shell](https://github.com/milkbikis/powerline-shell). The problem
-with powerline-shell is that it is implemented in Python, and invoking the
-Python interpreter each time to draw the shell prompt involves a noticable
-delay. I hate delays. So I decided to port the functionalities I need to pure
-Bash script instead. 
+This script is largely inspired by
+[powerline-shell](https://github.com/milkbikis/powerline-shell). The biggest
+problem is that it is implemented in Python. Python scripts are much easier to
+write and maintain than Bash scripts, but for my simple cases I find Bash
+scripts to be manageable. However, invoking the Python interpreter each time to
+draw the shell prompt introduces a noticable delay. I hate delays. So I decided
+to port just the functionalities I need to pure Bash script instead. 
+
+The other issue is that I don't like the idea of requiring patched fonts for
+this to work. The font patching mechanism from the original Powerline does not
+work with the bitmap font (Apple Monaco without anti-aliasing) I use on
+non-retina screens. I'd rather stick with existing unicode symbols in the fonts.
+
 
 ## See also
 * [powerline](https://github.com/Lokaltog/powerline): Unified Powerline
