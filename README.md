@@ -13,7 +13,31 @@ Powerline for Bash in pure Bash script.
 * Fast execution (no noticable delay).
 * No need for patched fonts. 
 
+
+## Installation
+
+Download the Bash script
+
+    curl https://raw.github.com/riobard/bash-powerline/master/bash-powerline.sh > ~/.bash-powerline.sh
+
+And source it in your `.bashrc`
+
+    source ~/.bash-powerline.sh
+
+For best result, use [Solarized
+colorscheme](https://github.com/altercation/solarized) for your terminal
+emulator. Or hack your own colorscheme by modifying the script. It's really
+easy.
+
+
 ## Why?
+
+This simple script is inspired by
+[powerline-shell](https://github.com/milkbikis/powerline-shell). The problem
+with powerline-shell is that it is implemented in Python, and invoking the
+Python interpreter each time to draw the shell prompt involves a noticable
+delay. I hate delays. So I decided to port the functionalities I need to pure
+Bash script instead. 
 
 ## See also
 * [powerline](https://github.com/Lokaltog/powerline): Unified Powerline
