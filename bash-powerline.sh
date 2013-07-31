@@ -82,16 +82,18 @@ __powerline() {
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
-    case "$(uname)" in
-        Darwin)
-            PS_SYMBOL=$PS_SYMBOL_DARWIN
-            ;;
-        Linux)
-            PS_SYMBOL=$PS_SYMBOL_LINUX
-            ;;
-        *)
-            PS_SYMBOL=$PS_SYMBOL_OTHER
-    esac
+    if [[ -z "$PS_SYMBOL" ]]; then
+      case "$(uname)" in
+          Darwin)
+              PS_SYMBOL=$PS_SYMBOL_DARWIN
+              ;;
+          Linux)
+              PS_SYMBOL=$PS_SYMBOL_LINUX
+              ;;
+          *)
+              PS_SYMBOL=$PS_SYMBOL_OTHER
+      esac
+    fi
 
     ps1() {
         # Check the exit code of the previous command and display different
