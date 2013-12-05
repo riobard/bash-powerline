@@ -21,7 +21,7 @@ __powerline() {
         FG_BASE1="\[$(tput setaf 245)\]"
         FG_BASE2="\[$(tput setaf 254)\]"
         FG_BASE3="\[$(tput setaf 230)\]"
-        
+
         BG_BASE03="\[$(tput setaf 234)\]"
         BG_BASE02="\[$(tput setaf 235)\]"
         BG_BASE01="\[$(tput setaf 240)\]"
@@ -30,7 +30,7 @@ __powerline() {
         BG_BASE1="\[$(tput setaf 245)\]"
         BG_BASE2="\[$(tput setaf 254)\]"
         BG_BASE3="\[$(tput setaf 230)\]"
-        
+
         FG_YELLOW="\[$(tput setaf 136)\]"
         FG_ORANGE="\[$(tput setaf 166)\]"
         FG_RED="\[$(tput setaf 160)\]"
@@ -39,7 +39,7 @@ __powerline() {
         FG_BLUE="\[$(tput setaf 33)\]"
         FG_CYAN="\[$(tput setaf 37)\]"
         FG_GREEN="\[$(tput setaf 64)\]"
-        
+
         BG_YELLOW="\[$(tput setaf 136)\]"
         BG_ORANGE="\[$(tput setaf 166)\]"
         BG_RED="\[$(tput setaf 160)\]"
@@ -48,9 +48,9 @@ __powerline() {
         BG_BLUE="\[$(tput setaf 33)\]"
         BG_CYAN="\[$(tput setaf 37)\]"
         BG_GREEN="\[$(tput setaf 64)\]"
-    
+
     else
-    
+
         FG_BASE03="\[$(tput setaf 8)\]"
         FG_BASE02="\[$(tput setaf 0)\]"
         FG_BASE01="\[$(tput setaf 10)\]"
@@ -59,7 +59,7 @@ __powerline() {
         FG_BASE1="\[$(tput setaf 14)\]"
         FG_BASE2="\[$(tput setaf 7)\]"
         FG_BASE3="\[$(tput setaf 15)\]"
-    
+
         BG_BASE03="\[$(tput setab 8)\]"
         BG_BASE02="\[$(tput setab 0)\]"
         BG_BASE01="\[$(tput setab 10)\]"
@@ -68,7 +68,7 @@ __powerline() {
         BG_BASE1="\[$(tput setab 14)\]"
         BG_BASE2="\[$(tput setab 7)\]"
         BG_BASE3="\[$(tput setab 15)\]"
-    
+
         FG_YELLOW="\[$(tput setaf 3)\]"
         FG_ORANGE="\[$(tput setaf 9)\]"
         FG_RED="\[$(tput setaf 1)\]"
@@ -77,7 +77,7 @@ __powerline() {
         FG_BLUE="\[$(tput setaf 4)\]"
         FG_CYAN="\[$(tput setaf 6)\]"
         FG_GREEN="\[$(tput setaf 2)\]"
-    
+
         BG_YELLOW="\[$(tput setab 3)\]"
         BG_ORANGE="\[$(tput setab 9)\]"
         BG_RED="\[$(tput setab 1)\]"
@@ -93,7 +93,7 @@ __powerline() {
     RESET="\[$(tput sgr0)\]"
     BOLD="\[$(tput bold)\]"
 
-    __git_branch() { 
+    __git_branch() {
         [ -z "$(which git)" ] && return    # no git command found
 
         # try to get current branch or or SHA1 hash for detached head
