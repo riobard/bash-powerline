@@ -53,16 +53,28 @@ __powerline() {
     RESET="\[$(tput sgr0)\]"
     BOLD="\[$(tput bold)\]"
 
-    __git_branch() { 
-        [ -z "$(which git)" ] && return    # no git command found
+    # what OS?
+    case "$(uname)" in
+        Darwin)
+            PS_SYMBOL=$PS_SYMBOL_DARWIN
+            ;;
+        Linux)
+            PS_SYMBOL=$PS_SYMBOL_LINUX
+            ;;
+        *)
+            PS_SYMBOL=$PS_SYMBOL_OTHER
+    esac
 
-        # try to get current branch or or SHA1 hash for detached head
+    __git_info() { 
+        [ -x "$(which git)" ] || return    # no git command found
+
+        # get current branch name or short SHA1 hash for detached head
         local branch="$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)"
-        [ -z "$branch" ] && return  # not a git branch
+        [ -n "$branch" ] || return  # not a git branch
 
         local marks
 
-        # branch is modified
+        # branch is modified?
         [ -n "$(git status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
 
         # how many commits local branch is ahead/behind of remote?
@@ -76,17 +88,6 @@ __powerline() {
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
-    case "$(uname)" in
-        Darwin)
-            PS_SYMBOL=$PS_SYMBOL_DARWIN
-            ;;
-        Linux)
-            PS_SYMBOL=$PS_SYMBOL_LINUX
-            ;;
-        *)
-            PS_SYMBOL=$PS_SYMBOL_OTHER
-    esac
-
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
@@ -97,7 +98,7 @@ __powerline() {
         fi
 
         PS1="$BG_BASE1$FG_BASE3 \w $RESET"
-        PS1+="$BG_BLUE$FG_BASE3$(__git_branch)$RESET"
+        PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
         PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
     }
 
