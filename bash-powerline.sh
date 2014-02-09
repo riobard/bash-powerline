@@ -86,7 +86,7 @@ __powerline() {
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$marks "
+        printf "$GIT_BRANCH_SYMBOL$branch$marks"
     }
 
     ps1() {
