@@ -4,12 +4,14 @@ __powerline() {
 
     # Unicode symbols
     PS_SYMBOL_DARWIN=''
-    PS_SYMBOL_LINUX='$'
+    PS_SYMBOL_LINUX='\$'
     PS_SYMBOL_OTHER='%'
-    GIT_BRANCH_SYMBOL='⑂ '
-    GIT_BRANCH_CHANGED_SYMBOL='+'
-    GIT_NEED_PUSH_SYMBOL='⇡'
-    GIT_NEED_PULL_SYMBOL='⇣'
+    GIT_BRANCH_SYMBOL='  '
+    GIT_BRANCH_CHANGED_SYMBOL='+ '
+    GIT_NEED_PUSH_SYMBOL='⇡ '
+    GIT_NEED_PULL_SYMBOL='⇣ '
+    SEPARATOR=''
+    SEPARATOR_THIN=''
 
     # Solarized colorscheme
     FG_BASE03="\[$(tput setaf 8)\]"
@@ -34,6 +36,7 @@ __powerline() {
     FG_ORANGE="\[$(tput setaf 9)\]"
     FG_RED="\[$(tput setaf 1)\]"
     FG_MAGENTA="\[$(tput setaf 5)\]"
+    FG_MAGENTA="\[\033[0;35m\]" # foreground magenta
     FG_VIOLET="\[$(tput setaf 13)\]"
     FG_BLUE="\[$(tput setaf 4)\]"
     FG_CYAN="\[$(tput setaf 6)\]"
@@ -79,27 +82,49 @@ __powerline() {
 
         # how many commits local branch is ahead/behind of remote?
         local stat="$(git status --porcelain --branch | grep '^##' | grep -o '\[.\+\]$')"
-        local aheadN="$(echo $stat | grep -o 'ahead \d\+' | grep -o '\d\+')"
-        local behindN="$(echo $stat | grep -o 'behind \d\+' | grep -o '\d\+')"
+        local aheadN="$(echo $stat | grep -o 'ahead [0-9]\+'| grep -o '[0-9]\+')"
+        local behindN="$(echo $stat | grep -o 'behind [0-9]\+' | grep -o '[0-9]\+')"
         [ -n "$aheadN" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$aheadN"
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$marks "
+        printf "$GIT_BRANCH_SYMBOL$branch$marks "
     }
 
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
         if [ $? -eq 0 ]; then
-            local BG_EXIT="$BG_GREEN"
+            local GITINFO=$(__git_info)
+            if [ -n "$GITINFO" ]; then
+                local BG_EXIT="$FG_BLUE"
+            else
+                local BG_EXIT="$FG_YELLOW"
+            fi
+            BG_EXIT+="$BG_GREEN$RESET$BG_GREEN"
+            local FG_EXIT="$FG_GREEN"
+            local EXIT_RESULT=0
         else
-            local BG_EXIT="$BG_RED"
+            local GITINFO=$(__git_info)
+            if [ -n "$GITINFO" ]; then
+                local BG_EXIT="$FG_BLUE"
+            else
+                local BG_EXIT="$FG_YELLOW"
+            fi
+            BG_EXIT+="$BG_RED$RESET$BG_RED"
+            local FG_EXIT="$FG_RED"
+            local EXIT_RESULT=1
         fi
+        PS1="$BG_BASE2$FG_BASE02\t $FG_BASE2$BG_BASE02$SEPARATOR$RESET" #time
+        PS1+="$BG_BASE02$FG_BASE3 \u $FG_BASE02$BG_MAGENTA$SEPARATOR$RESET" # user
+        PS1+="$BG_MAGENTA$FG_YELLOW \H $FG_MAGENTA$BG_YELLOW$RESET" # host
+        PS1+="$BG_YELLOW$FG_BASE02 \W $RESET" # current directory
 
-        PS1="$BG_BASE1$FG_BASE3 \w $RESET"
-        PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
-        PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
+        if [ -n "$GITINFO" ]; then
+            PS1+="$FG_YELLOW$BG_BLUE$RESET" # GIT Info
+            PS1+="$BG_BLUE$FG_BASE3$GITINFO$RESET" # GIT Info
+        fi
+        PS1+="$BG_EXIT$FG_BASE3 \l $SEPARATOR_THIN $PS_SYMBOL$RESET$FG_EXIT$RESET" # current terminal plus $
     }
 
     PROMPT_COMMAND=ps1
