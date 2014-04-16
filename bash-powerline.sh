@@ -69,7 +69,7 @@ __powerline() {
         [ -x "$(which git)" ] || return    # git not found
 
         # get current branch name or short SHA1 hash for detached head
-        local branch="$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)"
+        local branch="$(git symbolic-ref --short HEAD 2>/dev/null || git describe --always 2>/dev/null)"
         [ -n "$branch" ] || return  # git branch not found
 
         local marks
