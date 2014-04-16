@@ -3,74 +3,74 @@
 __powerline() {
 
     # Unicode symbols
-    PS_SYMBOL_DARWIN=''
-    PS_SYMBOL_LINUX='$'
-    PS_SYMBOL_OTHER='%'
-    GIT_BRANCH_SYMBOL='⑂ '
-    GIT_BRANCH_CHANGED_SYMBOL='+'
-    GIT_NEED_PUSH_SYMBOL='⇡'
-    GIT_NEED_PULL_SYMBOL='⇣'
+    readonly PS_SYMBOL_DARWIN=''
+    readonly PS_SYMBOL_LINUX='$'
+    readonly PS_SYMBOL_OTHER='%'
+    readonly GIT_BRANCH_SYMBOL='⑂ '
+    readonly GIT_BRANCH_CHANGED_SYMBOL='+'
+    readonly GIT_NEED_PUSH_SYMBOL='⇡'
+    readonly GIT_NEED_PULL_SYMBOL='⇣'
 
     # Solarized colorscheme
-    FG_BASE03="\[$(tput setaf 8)\]"
-    FG_BASE02="\[$(tput setaf 0)\]"
-    FG_BASE01="\[$(tput setaf 10)\]"
-    FG_BASE00="\[$(tput setaf 11)\]"
-    FG_BASE0="\[$(tput setaf 12)\]"
-    FG_BASE1="\[$(tput setaf 14)\]"
-    FG_BASE2="\[$(tput setaf 7)\]"
-    FG_BASE3="\[$(tput setaf 15)\]"
+    readonly FG_BASE03="\[$(tput setaf 8)\]"
+    readonly FG_BASE02="\[$(tput setaf 0)\]"
+    readonly FG_BASE01="\[$(tput setaf 10)\]"
+    readonly FG_BASE00="\[$(tput setaf 11)\]"
+    readonly FG_BASE0="\[$(tput setaf 12)\]"
+    readonly FG_BASE1="\[$(tput setaf 14)\]"
+    readonly FG_BASE2="\[$(tput setaf 7)\]"
+    readonly FG_BASE3="\[$(tput setaf 15)\]"
 
-    BG_BASE03="\[$(tput setab 8)\]"
-    BG_BASE02="\[$(tput setab 0)\]"
-    BG_BASE01="\[$(tput setab 10)\]"
-    BG_BASE00="\[$(tput setab 11)\]"
-    BG_BASE0="\[$(tput setab 12)\]"
-    BG_BASE1="\[$(tput setab 14)\]"
-    BG_BASE2="\[$(tput setab 7)\]"
-    BG_BASE3="\[$(tput setab 15)\]"
+    readonly BG_BASE03="\[$(tput setab 8)\]"
+    readonly BG_BASE02="\[$(tput setab 0)\]"
+    readonly BG_BASE01="\[$(tput setab 10)\]"
+    readonly BG_BASE00="\[$(tput setab 11)\]"
+    readonly BG_BASE0="\[$(tput setab 12)\]"
+    readonly BG_BASE1="\[$(tput setab 14)\]"
+    readonly BG_BASE2="\[$(tput setab 7)\]"
+    readonly BG_BASE3="\[$(tput setab 15)\]"
 
-    FG_YELLOW="\[$(tput setaf 3)\]"
-    FG_ORANGE="\[$(tput setaf 9)\]"
-    FG_RED="\[$(tput setaf 1)\]"
-    FG_MAGENTA="\[$(tput setaf 5)\]"
-    FG_VIOLET="\[$(tput setaf 13)\]"
-    FG_BLUE="\[$(tput setaf 4)\]"
-    FG_CYAN="\[$(tput setaf 6)\]"
-    FG_GREEN="\[$(tput setaf 2)\]"
+    readonly FG_YELLOW="\[$(tput setaf 3)\]"
+    readonly FG_ORANGE="\[$(tput setaf 9)\]"
+    readonly FG_RED="\[$(tput setaf 1)\]"
+    readonly FG_MAGENTA="\[$(tput setaf 5)\]"
+    readonly FG_VIOLET="\[$(tput setaf 13)\]"
+    readonly FG_BLUE="\[$(tput setaf 4)\]"
+    readonly FG_CYAN="\[$(tput setaf 6)\]"
+    readonly FG_GREEN="\[$(tput setaf 2)\]"
 
-    BG_YELLOW="\[$(tput setab 3)\]"
-    BG_ORANGE="\[$(tput setab 9)\]"
-    BG_RED="\[$(tput setab 1)\]"
-    BG_MAGENTA="\[$(tput setab 5)\]"
-    BG_VIOLET="\[$(tput setab 13)\]"
-    BG_BLUE="\[$(tput setab 4)\]"
-    BG_CYAN="\[$(tput setab 6)\]"
-    BG_GREEN="\[$(tput setab 2)\]"
+    readonly BG_YELLOW="\[$(tput setab 3)\]"
+    readonly BG_ORANGE="\[$(tput setab 9)\]"
+    readonly BG_RED="\[$(tput setab 1)\]"
+    readonly BG_MAGENTA="\[$(tput setab 5)\]"
+    readonly BG_VIOLET="\[$(tput setab 13)\]"
+    readonly BG_BLUE="\[$(tput setab 4)\]"
+    readonly BG_CYAN="\[$(tput setab 6)\]"
+    readonly BG_GREEN="\[$(tput setab 2)\]"
 
-    DIM="\[$(tput dim)\]"
-    REVERSE="\[$(tput rev)\]"
-    RESET="\[$(tput sgr0)\]"
-    BOLD="\[$(tput bold)\]"
+    readonly DIM="\[$(tput dim)\]"
+    readonly REVERSE="\[$(tput rev)\]"
+    readonly RESET="\[$(tput sgr0)\]"
+    readonly BOLD="\[$(tput bold)\]"
 
     # what OS?
     case "$(uname)" in
         Darwin)
-            PS_SYMBOL=$PS_SYMBOL_DARWIN
+            readonly PS_SYMBOL=$PS_SYMBOL_DARWIN
             ;;
         Linux)
-            PS_SYMBOL=$PS_SYMBOL_LINUX
+            readonly PS_SYMBOL=$PS_SYMBOL_LINUX
             ;;
         *)
-            PS_SYMBOL=$PS_SYMBOL_OTHER
+            readonly PS_SYMBOL=$PS_SYMBOL_OTHER
     esac
 
     __git_info() { 
-        [ -x "$(which git)" ] || return    # no git command found
+        [ -x "$(which git)" ] || return    # git not found
 
         # get current branch name or short SHA1 hash for detached head
         local branch="$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)"
-        [ -n "$branch" ] || return  # not a git branch
+        [ -n "$branch" ] || return  # git branch not found
 
         local marks
 
