@@ -76,7 +76,16 @@ __powerline() {
 
         # branch is modified?
         [ -n "$(git status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
-
+		local git_status="`git status -unormal --ignore-submodules 2>&1`"
+		if ! [[ "$git_status" =~ Not\ a\ git\ repo ]]; then
+			if [[ "$git_status" =~ nothing\ to\ commit ]]; then
+				local colour=$BG_GREEN
+			elif [[ "$git_status" =~ nothing\ added\ to\ commit\ but\ untracked\ files\ present ]]; then
+				local colour=$BG_RED
+			else
+				local colour=$BG_YELLOW
+			fi
+		fi
         # how many commits local branch is ahead/behind of remote?
         local stat="$(git status --porcelain --branch | grep '^##' | grep -o '\[.\+\]$')"
         local aheadN="$(echo $stat | grep -o 'ahead \d\+' | grep -o '\d\+')"
@@ -85,7 +94,7 @@ __powerline() {
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$marks "
+        printf " $GIT_BRANCH_SYMBOL$branch$marks$RESET "
     }
 
     ps1() {
@@ -98,7 +107,7 @@ __powerline() {
         fi
 
         PS1="$BG_BASE1$FG_BASE3 \w $RESET"
-        PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
+        PS1+="$(__git_info)"
         PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
     }
 
