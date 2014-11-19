@@ -99,7 +99,14 @@ __powerline() {
             local IS_SUDO="$FG_YELLOW"
         fi
 
-        PS1="$BG_BASE03$FG_BASE3$IS_SUDO \u $RESET"
+        # Check if ssh session
+        if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+            local IS_SSH="$BG_BASE03$FG_BASE3@\h $RESET"
+        else
+            local IS_SSH=""
+        fi
+
+        PS1="$BG_BASE03$FG_BASE3$IS_SUDO$IS_SSH \u $RESET"
         PS1+="$BG_BASE03$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
         PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET"
