@@ -92,7 +92,15 @@ __powerline() {
             local PS_SYMBOL=$PS_SYMBOL_ROOT
         fi
 
-        PS1="$BG_BASE03$FG_BASE3 \w $RESET"
+        # Check if running sudo
+        if [ -z "$SUDO_USER" ]; then
+            local IS_SUDO=""
+        else
+            local IS_SUDO="$FG_YELLOW"
+        fi
+
+        PS1="$BG_BASE03$FG_BASE3$IS_SUDO \u $RESET"
+        PS1+="$BG_BASE03$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
         PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET"
         PS1+="$BG_EXIT"
