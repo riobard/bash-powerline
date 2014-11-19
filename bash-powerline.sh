@@ -101,7 +101,7 @@ __powerline() {
 
         # Check if ssh session
         if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-            local IS_SSH="$BG_BASE03$FG_BASE3@\h$RESET"
+            local IS_SSH="$BG_BASE03$FG_BASE3@\h"
         else
             local IS_SSH=""
         fi
