@@ -78,10 +78,10 @@ __powerline() {
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
-        if [ $? -eq 0 ]; then
-            local BG_EXIT="$BG_GREEN"
+        if [ $? -ne 0 ]; then
+            local BG_EXIT="$BG_ORANGE$FG_BASE3 $? $RESET"
         else
-            local BG_EXIT="$BG_RED"
+            local BG_EXIT=""
         fi
         # Check if root or regular user
         if [ $EUID -ne 0 ]; then
@@ -94,7 +94,9 @@ __powerline() {
 
         PS1="$BG_BASE03$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
-        PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET "
+        PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET"
+        PS1+="$BG_EXIT"
+        PS1+=" "
     }
 
     PROMPT_COMMAND=ps1
