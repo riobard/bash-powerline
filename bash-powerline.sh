@@ -3,10 +3,9 @@
 __powerline() {
 
     # Unicode symbols
-    readonly PS_SYMBOL_DARWIN=''
-    readonly PS_SYMBOL_LINUX='$'
-    readonly PS_SYMBOL_OTHER='%'
-    readonly GIT_BRANCH_SYMBOL='⑂ '
+    readonly PS_SYMBOL_USER='$'
+    readonly PS_SYMBOL_ROOT='#'
+    readonly GIT_BRANCH_SYMBOL='»'
     readonly GIT_BRANCH_CHANGED_SYMBOL='+'
     readonly GIT_NEED_PUSH_SYMBOL='⇡'
     readonly GIT_NEED_PULL_SYMBOL='⇣'
@@ -53,18 +52,6 @@ __powerline() {
     readonly RESET="\[$(tput sgr0)\]"
     readonly BOLD="\[$(tput bold)\]"
 
-    # what OS?
-    case "$(uname)" in
-        Darwin)
-            readonly PS_SYMBOL=$PS_SYMBOL_DARWIN
-            ;;
-        Linux)
-            readonly PS_SYMBOL=$PS_SYMBOL_LINUX
-            ;;
-        *)
-            readonly PS_SYMBOL=$PS_SYMBOL_OTHER
-    esac
-
     __git_info() { 
         [ -x "$(which git)" ] || return    # git not found
 
@@ -88,18 +75,73 @@ __powerline() {
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
+    __short_dir() {
+        local DIR_SPLIT_COUNT=4
+        IFS='/' read -a DIR_ARRAY <<< "$PWD"
+        if [ ${#DIR_ARRAY[@]} -gt $DIR_SPLIT_COUNT ]; then
+            local DIR_OUTPUT="/${DIR_ARRAY[1]}/.../${DIR_ARRAY[${#DIR_ARRAY[@]}-2]}/${DIR_ARRAY[${#DIR_ARRAY[@]}-1]}"
+        else
+            local DIR_OUTPUT="$PWD"
+        fi
+        if [ "$HOME" == "$PWD" ]; then
+            local DIR_OUTPUT="~"
+        fi
+        printf "$DIR_OUTPUT"
+    }
+
+    __short_path() {
+        local SHORT_NUM=20
+        if (( ${#PWD} > $SHORT_NUM )); then
+            local SHORT_PATH="..${PWD: -$SHORT_NUM}"
+        else
+            local SHORT_PATH=$PWD
+        fi
+        if [ "$HOME" == "$PWD" ]; then
+            local SHORT_PATH="~"
+        fi
+        echo $SHORT_PATH
+   }
+
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
-        if [ $? -eq 0 ]; then
-            local BG_EXIT="$BG_GREEN"
+        if [ $? -ne 0 ]; then
+            local BG_EXIT="$BG_ORANGE$FG_BASE3 $? $RESET"
         else
-            local BG_EXIT="$BG_RED"
+            local BG_EXIT=""
+        fi
+        # Check if root or regular user
+        if [ $EUID -ne 0 ]; then
+            local BG_ROOT="$BG_GREEN"
+            local PS_SYMBOL=$PS_SYMBOL_USER
+        else
+            local BG_ROOT="$BG_RED"
+            local PS_SYMBOL=$PS_SYMBOL_ROOT
         fi
 
-        PS1="$BG_BASE1$FG_BASE3 \w $RESET"
+        # Check if running sudo
+        if [ -z "$SUDO_USER" ]; then
+            local IS_SUDO=""
+        else
+            local IS_SUDO="$FG_YELLOW"
+        fi
+
+        # Check if ssh session
+        if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+            local IS_SSH="$BG_BASE03$FG_YELLOW@\h"
+        else
+            local IS_SSH=""
+        fi
+
+        PS1=""
+        PS1+="$BG_BASE03$FG_BASE3$IS_SUDO \u$IS_SSH $RESET"
+        PS1+="$BG_BASE03$FG_BASE3 $(__short_dir) $RESET"
+        #PS1+="$BG_BASE03$FG_BASE3 $(__short_path) $RESET"
+        #PS1+="$BG_BASE03$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
-        PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
+        PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET"
+        PS1+="$BG_EXIT"
+        PS1+=" "
     }
 
     PROMPT_COMMAND=ps1
