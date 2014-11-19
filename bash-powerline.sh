@@ -75,6 +75,20 @@ __powerline() {
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
+    __short_dir() {
+        local DIR_SPLIT_COUNT=4
+        IFS='/' read -a DIR_ARRAY <<< "$PWD"
+        if [ ${#DIR_ARRAY[@]} -gt $DIR_SPLIT_COUNT ]; then
+            local DIR_OUTPUT="/${DIR_ARRAY[1]}/.../${DIR_ARRAY[${#DIR_ARRAY[@]}-2]}/${DIR_ARRAY[${#DIR_ARRAY[@]}-1]}"
+        else
+            local DIR_OUTPUT="$PWD"
+        fi
+        if [ "$HOME" == "$PWD" ]; then
+            local DIR_OUTPUT="~"
+        fi
+        printf "$DIR_OUTPUT"
+    }
+
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
@@ -107,6 +121,7 @@ __powerline() {
         fi
 
         PS1="$BG_BASE03$FG_BASE3$IS_SUDO \u$IS_SSH $RESET"
+        PS1+="$BG_BASE03$FG_BASE3$(__short_dir)$RESET"
         PS1+="$BG_BASE03$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
         PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET"
