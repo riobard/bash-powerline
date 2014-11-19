@@ -3,10 +3,9 @@
 __powerline() {
 
     # Unicode symbols
-    readonly PS_SYMBOL_DARWIN=''
-    readonly PS_SYMBOL_LINUX='$'
-    readonly PS_SYMBOL_OTHER='%'
-    readonly GIT_BRANCH_SYMBOL='⑂ '
+    readonly PS_SYMBOL_USER='$'
+    readonly PS_SYMBOL_ROOT='#'
+    readonly GIT_BRANCH_SYMBOL='»'
     readonly GIT_BRANCH_CHANGED_SYMBOL='+'
     readonly GIT_NEED_PUSH_SYMBOL='⇡'
     readonly GIT_NEED_PULL_SYMBOL='⇣'
@@ -53,18 +52,6 @@ __powerline() {
     readonly RESET="\[$(tput sgr0)\]"
     readonly BOLD="\[$(tput bold)\]"
 
-    # what OS?
-    case "$(uname)" in
-        Darwin)
-            readonly PS_SYMBOL=$PS_SYMBOL_DARWIN
-            ;;
-        Linux)
-            readonly PS_SYMBOL=$PS_SYMBOL_LINUX
-            ;;
-        *)
-            readonly PS_SYMBOL=$PS_SYMBOL_OTHER
-    esac
-
     __git_info() { 
         [ -x "$(which git)" ] || return    # git not found
 
@@ -96,10 +83,18 @@ __powerline() {
         else
             local BG_EXIT="$BG_RED"
         fi
+        # Check if root or regular user
+        if [ $EUID -ne 0 ]; then
+            local BG_ROOT="$BG_GREEN"
+            local PS_SYMBOL=$PS_SYMBOL_USER
+        else
+            local BG_ROOT="$BG_RED"
+            local PS_SYMBOL=$PS_SYMBOL_ROOT
+        fi
 
-        PS1="$BG_BASE1$FG_BASE3 \w $RESET"
+        PS1="$BG_BASE03$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
-        PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
+        PS1+="$BG_ROOT$FG_BASE3 $PS_SYMBOL $RESET "
     }
 
     PROMPT_COMMAND=ps1
