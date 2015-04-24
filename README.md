@@ -62,3 +62,7 @@ non-retina screens. I'd rather stick with existing unicode symbols in the fonts.
   Powerline. 
 * [emacs powerline](https://github.com/milkypostman/powerline): Powerline for
   Emacs
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vergissberlin/bash-powerline/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
