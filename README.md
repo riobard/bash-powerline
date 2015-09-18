@@ -22,7 +22,7 @@ Powerline for Bash in pure Bash script.
 
 Download the Bash script
 
-    curl https://raw.github.com/ingoha/bash-powerline/master/bash-powerline.sh > ~/.bash-powerline.sh
+    curl https://raw.githubusercontent.com/ingoha/bash-powerline/master/bash-powerline.sh > ~/.bash-powerline.sh
 
 And source it in your `.bashrc`
 
