@@ -28,6 +28,10 @@ And source it in your `.bashrc`
 
     source ~/.bash-powerline.sh
 
+You need a terminal capable of displaying at least 16 colors. By default, this is not the case in Ubuntu and Mint. Therefore add this to your `.bashrc`:
+
+  | export TERM=xterm-256color
+
 For best result, use [Solarized
 colorscheme](https://github.com/altercation/solarized) for your terminal
 emulator. Or hack your own colorscheme by modifying the script. It's really
