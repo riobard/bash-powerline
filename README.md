@@ -30,7 +30,7 @@ And source it in your `.bashrc`
 
 You need a terminal capable of displaying at least 16 colors. By default, this is not the case in Ubuntu and Mint. Therefore add this to your `.bashrc`:
 
-  | export TERM=xterm-256color
+    export TERM=xterm-256color
 
 For best result, use [Solarized
 colorscheme](https://github.com/altercation/solarized) for your terminal
