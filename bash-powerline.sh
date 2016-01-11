@@ -10,6 +10,8 @@ __powerline() {
     readonly GIT_BRANCH_CHANGED_SYMBOL='+'
     readonly GIT_NEED_PUSH_SYMBOL='⇡'
     readonly GIT_NEED_PULL_SYMBOL='⇣'
+    readonly PYTHON_SYMBOL='ƨ'
+    readonly RUBY_SYMBOL='◈'
 
     # Solarized colorscheme
     readonly FG_BASE03="\[$(tput setaf 8)\]"
@@ -65,7 +67,7 @@ __powerline() {
             readonly PS_SYMBOL=$PS_SYMBOL_OTHER
     esac
 
-    __git_info() { 
+    __git_info() {
         [ -x "$(which git)" ] || return    # git not found
 
         local git_eng="env LANG=C git"   # force git output in English to make our work easier
@@ -89,9 +91,26 @@ __powerline() {
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
+    __virtualenv() {
+      if [ -z "${VIRTUAL_ENV}" ] ; then
+        return
+      else
+        local virtualenv="$(basename $VIRTUAL_ENV)"
+        printf " $PYTHON_SYMBOL $virtualenv "
+      fi
+    }
+
+    __rvm() {
+      if [ -z "${RUBY_VERSION}" ] ; then
+        return
+      else
+        printf " $RUBY_VERSION "
+      fi
+    }
+
     ps1() {
         # Check the exit code of the previous command and display different
-        # colors in the prompt accordingly. 
+        # colors in the prompt accordingly.
         if [ $? -eq 0 ]; then
             local BG_EXIT="$BG_GREEN"
         else
@@ -100,6 +119,8 @@ __powerline() {
 
         PS1="$BG_BASE1$FG_BASE3 \w $RESET"
         PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
+        PS1+="$BG_VIOLET$FG_BASE3$(__virtualenv)$RESET"
+        PS1+="$BG_ORANGE$FG_BASE3$(__rvm)$RESET"
         PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
     }
 
