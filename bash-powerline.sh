@@ -99,7 +99,18 @@ __powerline() {
         fi
 
         PS1="$BG_BASE1$FG_BASE3 \w $RESET"
-        PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
+        # Bash by default expands the content of PS1 unless promptvars is disabled.
+        # We must use another layer of reference to prevent expanding any user
+        # provided strings, which would cause security issues.
+        # POC: https://github.com/njhartwell/pw3nage
+        # Related fix in git-bash: https://github.com/git/git/blob/9d77b0405ce6b471cb5ce3a904368fc25e55643d/contrib/completion/git-prompt.sh#L324
+        if shopt -q promptvars; then
+            __powerline_git_info="$(__git_info)"
+            PS1+="$BG_BLUE$FG_BASE3\${__powerline_git_info}$RESET"
+        else
+            # promptvars is disabled. Avoid creating unnecessary env var.
+            PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
+        fi
         PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
     }
 
