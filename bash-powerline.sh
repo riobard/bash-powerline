@@ -91,17 +91,18 @@ __powerline() {
     readonly RESET="\[$(tput sgr0)\]"
     readonly BOLD="\[$(tput bold)\]"
 
-    # what OS?
-    case "$(uname)" in
-        Darwin)
-            readonly PS_SYMBOL=$PS_SYMBOL_DARWIN
-            ;;
-        Linux)
-            readonly PS_SYMBOL=$PS_SYMBOL_LINUX
-            ;;
-        *)
-            readonly PS_SYMBOL=$PS_SYMBOL_OTHER
-    esac
+    if [[ -z "$PS_SYMBOL" ]]; then
+      case "$(uname)" in
+          Darwin)
+              PS_SYMBOL=$PS_SYMBOL_DARWIN
+              ;;
+          Linux)
+              PS_SYMBOL=$PS_SYMBOL_LINUX
+              ;;
+          *)
+              PS_SYMBOL=$PS_SYMBOL_OTHER
+      esac
+    fi
 
     __git_info() { 
         [ -x "$(which git)" ] || return    # git not found
