@@ -24,7 +24,7 @@ Download the Bash script
 
     curl https://raw.githubusercontent.com/riobard/bash-powerline/master/bash-powerline.sh > ~/.bash-powerline.sh
 
-And source it in your `.bashrc`
+And source it in your `.bashrc` (or `.profile` on Mac):
 
     source ~/.bash-powerline.sh
 
