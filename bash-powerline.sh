@@ -137,7 +137,7 @@ __powerline() {
             local BG_EXIT="$BG_RED"
         fi
 
-        PS1="$BG_BASE1$FG_BASE3 \w $RESET"
+        PS1="$BG_BASE1$FG_BASE3$(date +%k:%M) \w $RESET"
         # Bash by default expands the content of PS1 unless promptvars is disabled.
         # We must use another layer of reference to prevent expanding any user
         # provided strings, which would cause security issues.
