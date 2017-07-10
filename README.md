@@ -12,6 +12,7 @@ Powerline for Bash in pure Bash script.
 * Git branch: display "+" symbol when current branch is changed but uncommited
 * Git branch: display "⇡" symbol and the difference in the number of commits when the current branch is ahead of remote (see screenshot)
 * Git branch: display "⇣" symbol and the difference in the number of commits when the current branch is behind of remote (see screenshot)
+* Python virtualenv: display current virtual environment
 * Platform-dependent prompt symbol for OS X and Linux (see screenshots)
 * Color code for the previously failed command
 * Fast execution (no noticable delay)

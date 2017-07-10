@@ -10,6 +10,7 @@ __powerline() {
     readonly GIT_BRANCH_CHANGED_SYMBOL='+'
     readonly GIT_NEED_PUSH_SYMBOL='⇡'
     readonly GIT_NEED_PULL_SYMBOL='⇣'
+    readonly PS_SYMBOL_PYTHON='ƨ'
 
     # Solarized colorscheme
     if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
@@ -128,6 +129,15 @@ __powerline() {
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
+    __virtualenv() {
+      if [ -z "${VIRTUAL_ENV}" ] ; then
+        return
+      else
+        local virtualenv="$(basename $VIRTUAL_ENV)"
+        printf "($PS_SYMBOL_PYTHON $virtualenv)"
+      fi
+    }
+
     ps1() {
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
@@ -137,7 +147,16 @@ __powerline() {
             local BG_EXIT="$BG_RED"
         fi
 
-        PS1="$BG_BASE1$FG_BASE3 \w $RESET"
+        PS1=""
+        # the indirection is a security measure, explained below
+        if shopt -q promptvars; then
+            __powerline_virtualenv="$(__virtualenv)"
+            PS1+="$BG_VIOLET$FG_BASE3\${__powerline_virtualenv}$RESET"
+        else
+            # promptvars is disabled. Avoid creating unnecessary env var.
+            PS1+="$BG_VIOLET$FG_BASE3$(__virtualenv)$RESET"
+        fi
+        PS1+="$BG_BASE1$FG_BASE3 \w $RESET"
         # Bash by default expands the content of PS1 unless promptvars is disabled.
         # We must use another layer of reference to prevent expanding any user
         # provided strings, which would cause security issues.
