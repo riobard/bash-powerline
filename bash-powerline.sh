@@ -105,7 +105,8 @@ __powerline() {
     fi
 
     __git_info() { 
-        [ -x "$(which git)" ] || return    # git not found
+        # is git found in PATH
+        hash git 2>/dev/null || return
 
         local git_eng="env LANG=C git"   # force git output in English to make our work easier
         # get current branch name or short SHA1 hash for detached head
