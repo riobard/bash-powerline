@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+#
+# Environment variables for configuring bash-powerline
+#
+# Display branch modification status (set to 0 to disable)
+# POWERLINE_DISPLAY_GIT_BRANCH_MODIFIED=1
+#
+# Display the number of commits the local branch is ahead/behind of the origin (set to 0 to disable)
+# POWERLINE_DISPLAY_GIT_BRANCH_STATS=1
+#
 
 __powerline() {
     if ! hash tput 2>/dev/null; then
@@ -119,15 +128,22 @@ __powerline() {
 
         local marks
 
-        # branch is modified?
-        [ -n "$($git_eng status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
+        if [[ ! -n ${POWERLINE_DISPLAY_GIT_BRANCH_MODIFIED+set} || ${POWERLINE_DISPLAY_GIT_BRANCH_MODIFIED} -ne 0 ]]; then
+            # is the branch modified?
+            [ -n "$($git_eng status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
+        fi
 
-        # how many commits local branch is ahead/behind of remote?
-        local stat="$($git_eng status --porcelain --branch | grep '^##' | grep -o '\[.\+\]$')"
-        local aheadN="$(echo $stat | grep -o 'ahead [[:digit:]]\+' | grep -o '[[:digit:]]\+')"
-        local behindN="$(echo $stat | grep -o 'behind [[:digit:]]\+' | grep -o '[[:digit:]]\+')"
-        [ -n "$aheadN" ] && marks+=" $GIT_NEED_PUSH_SYMBOL$aheadN"
-        [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
+        if [[ ! -n ${POWERLINE_DISPLAY_GIT_BRANCH_STATS} || ${POWERLINE_DISPLAY_GIT_BRANCH_STATS} -ne 0 ]]; then
+            # how many commits the local branch is ahead/behind of the remote?
+            local stat=$($git_eng status --porcelain --branch)
+            if [[ ${stat} =~ .*\[([a-z0-9,\ ]+)\] ]]; then
+                local aheadbehind=${BASH_REMATCH[1]}
+                # number of commits ahead
+                [[ ${aheadbehind}] =~ ahead\ ([[:digit:]]+) ]] && marks+=" $GIT_NEED_PUSH_SYMBOL${BASH_REMATCH[1]}"
+                # number of commits behind
+                [[ ${aheadbehind}] =~ .*behind\ ([[:digit:]]+) ]] && marks+=" $GIT_NEED_PULL_SYMBOL${BASH_REMATCH[1]}"
+            fi
+        fi
 
         # print the git branch segment without a trailing newline
         printf " $GIT_BRANCH_SYMBOL$branch$marks "
