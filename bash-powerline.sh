@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 __powerline() {
+    if ! hash tput 2>/dev/null; then
+        >&2 echo "tput missing, install ncurses to use bash-powerline.sh"
+        return
+    fi
 
     # Unicode symbols
     readonly PS_SYMBOL_DARWIN=''
