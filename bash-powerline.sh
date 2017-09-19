@@ -2,10 +2,8 @@
 #
 # Environment variables for configuring bash-powerline
 #
-# Display branch modification status (set to 0 to disable)
-# POWERLINE_DISPLAY_GIT_BRANCH_MODIFIED=1
-#
-# Display the number of commits the local branch is ahead/behind of the origin (set to 0 to disable)
+# Display branch modification status and the number of commits the local
+# branch is ahead/behind of the origin (set to 0 to disable)
 # POWERLINE_DISPLAY_GIT_BRANCH_STATS=1
 #
 
@@ -122,31 +120,35 @@ __powerline() {
         hash git 2>/dev/null || return
 
         local git_eng="env LANG=C git"   # force git output in English to make our work easier
+
         # get current branch name or short SHA1 hash for detached head
         local branch="$($git_eng symbolic-ref --short HEAD 2>/dev/null || $git_eng describe --tags --always 2>/dev/null)"
         [ -n "$branch" ] || return  # git branch not found
 
-        local marks
-
-        if [[ ! -n ${POWERLINE_DISPLAY_GIT_BRANCH_MODIFIED+set} || ${POWERLINE_DISPLAY_GIT_BRANCH_MODIFIED} -ne 0 ]]; then
-            # is the branch modified?
-            [ -n "$($git_eng status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
-        fi
+        local modified=""
+        local stats=""
 
         if [[ ! -n ${POWERLINE_DISPLAY_GIT_BRANCH_STATS} || ${POWERLINE_DISPLAY_GIT_BRANCH_STATS} -ne 0 ]]; then
-            # how many commits the local branch is ahead/behind of the remote?
-            local stat=$($git_eng status --porcelain --branch)
-            if [[ ${stat} =~ .*\[([a-z0-9,\ ]+)\] ]]; then
-                local aheadbehind=${BASH_REMATCH[1]}
-                # number of commits ahead
-                [[ ${aheadbehind}] =~ ahead\ ([[:digit:]]+) ]] && marks+=" $GIT_NEED_PUSH_SYMBOL${BASH_REMATCH[1]}"
-                # number of commits behind
-                [[ ${aheadbehind}] =~ .*behind\ ([[:digit:]]+) ]] && marks+=" $GIT_NEED_PULL_SYMBOL${BASH_REMATCH[1]}"
-            fi
+            while IFS= read -r line; do
+                # get branch statistics
+                if [[ ${line} =~ \#\#\ .*\[([a-z0-9,\ ]+)\] ]]; then
+                    local aheadbehind=${BASH_REMATCH[1]}
+                    # number of commits ahead
+                    [[ ${aheadbehind}] =~ ahead\ ([[:digit:]]+) ]] && stats+=" $GIT_NEED_PUSH_SYMBOL${BASH_REMATCH[1]}"
+                    # number of commits behind
+                    [[ ${aheadbehind}] =~ .*behind\ ([[:digit:]]+) ]] && stats+=" $GIT_NEED_PULL_SYMBOL${BASH_REMATCH[1]}"
+                fi
+
+                # get modification status (if command output doesn't begin with ##)
+                if [[ ! ${line} =~ ^## ]]; then
+                    modified+=" $GIT_BRANCH_CHANGED_SYMBOL"
+                    break
+                fi
+            done < <($git_eng status --porcelain --branch)
         fi
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$marks "
+        printf " $GIT_BRANCH_SYMBOL$branch$modified$stats "
     }
 
     ps1() {
