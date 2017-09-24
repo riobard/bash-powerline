@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
-#
-# Environment variables for configuring bash-powerline
-#
-# Display branch modification status and the number of commits the local
-# branch is ahead/behind of the origin (set to 0 to disable)
-# POWERLINE_DISPLAY_GIT_BRANCH_STATS=1
-#
+
+## Uncomment to disable git info
+#POWERLINE_GIT=0
 
 __powerline() {
     if ! hash tput 2>/dev/null; then
@@ -116,8 +112,9 @@ __powerline() {
     fi
 
     __git_info() { 
-        # is git found in PATH
-        hash git 2>/dev/null || return
+        [[ $POWERLINE_GIT = 0 ]] && return # disabled
+
+        hash git 2>/dev/null || return # git not found
 
         local git_eng="env LANG=C git"   # force git output in English to make our work easier
 
@@ -125,30 +122,21 @@ __powerline() {
         local branch="$($git_eng symbolic-ref --short HEAD 2>/dev/null || $git_eng describe --tags --always 2>/dev/null)"
         [ -n "$branch" ] || return  # git branch not found
 
-        local modified=""
-        local stats=""
+        local marks
 
-        if [[ ! -n ${POWERLINE_DISPLAY_GIT_BRANCH_STATS} || ${POWERLINE_DISPLAY_GIT_BRANCH_STATS} -ne 0 ]]; then
-            while IFS= read -r line; do
-                # get branch statistics
-                if [[ ${line} =~ \#\#\ .*\[([a-z0-9,\ ]+)\] ]]; then
-                    local aheadbehind=${BASH_REMATCH[1]}
-                    # number of commits ahead
-                    [[ ${aheadbehind}] =~ ahead\ ([[:digit:]]+) ]] && stats+=" $GIT_NEED_PUSH_SYMBOL${BASH_REMATCH[1]}"
-                    # number of commits behind
-                    [[ ${aheadbehind}] =~ .*behind\ ([[:digit:]]+) ]] && stats+=" $GIT_NEED_PULL_SYMBOL${BASH_REMATCH[1]}"
-                fi
-
-                # get modification status (if command output doesn't begin with ##)
-                if [[ ! ${line} =~ ^## ]]; then
-                    modified+=" $GIT_BRANCH_CHANGED_SYMBOL"
-                    break
-                fi
-            done < <($git_eng status --porcelain --branch)
-        fi
+        # scan first two lines of output from `git status`
+        while IFS= read -r line; do
+            if [[ $line =~ ^## ]]; then # header line
+                [[ $line =~ ahead\ ([0-9]+) ]] && marks+=" $GIT_NEED_PUSH_SYMBOL${BASH_REMATCH[1]}"
+                [[ $line =~ behind\ ([0-9]+) ]] && marks+=" $GIT_NEED_PULL_SYMBOL${BASH_REMATCH[1]}"
+            else # branch is modified if output contains more lines after the header line
+                marks=" $GIT_BRANCH_CHANGED_SYMBOL$marks"
+                break
+            fi
+        done < <($git_eng status --porcelain --branch)  # note the space between the two <
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$modified$stats "
+        printf " $GIT_BRANCH_SYMBOL$branch$marks "
     }
 
     ps1() {
