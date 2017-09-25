@@ -48,6 +48,8 @@ I'd rather stick with existing unicode symbols.
 
 ## See also
 
+* [zsh-powerline](https://github.com/riobard/zsh-powerline): Same thing but for
+    Zsh.
 * [powerline](https://github.com/Lokaltog/powerline): Unified Powerline
   written in Python. This is the future of all Powerline derivatives.
 * [vim-powerline](https://github.com/Lokaltog/vim-powerline): Powerline in Vim
