@@ -40,9 +40,18 @@ __powerline() {
 
         local git_eng="env LANG=C git"   # force git output in English to make our work easier
 
-        # get current branch name or short SHA1 hash for detached head
-        local branch="$($git_eng symbolic-ref --short HEAD 2>/dev/null || $git_eng describe --tags --always 2>/dev/null)"
-        [ -n "$branch" ] || return  # git branch not found
+        # get current branch name
+        local ref=$($git_eng symbolic-ref --short HEAD 2>/dev/null)
+
+        if [[ -n "$ref" ]]; then
+            # prepend branch symbol
+            ref=$GIT_BRANCH_SYMBOL$ref
+        else
+            # get tag name or short unique hash
+            ref=$($git_eng describe --tags --always 2>/dev/null)
+        fi
+
+        [[ -n "$ref" ]] || return  # not a git repo
 
         local marks
 
@@ -58,7 +67,7 @@ __powerline() {
         done < <($git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$marks"
+        printf " $ref$marks"
     }
 
     ps1() {
