@@ -55,7 +55,7 @@ __powerline() {
                 marks=" $GIT_BRANCH_CHANGED_SYMBOL$marks"
                 break
             fi
-        done < <($git_eng status --porcelain --branch)  # note the space between the two <
+        done < <($git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
 
         # print the git branch segment without a trailing newline
         printf " $GIT_BRANCH_SYMBOL$branch$marks"
