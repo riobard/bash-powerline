@@ -85,7 +85,7 @@ __powerline() {
         PS1="$cwd$git$symbol"
     }
 
-    PROMPT_COMMAND="$PROMPT_COMMAND; ps1"
+    PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 }
 
 __powerline
