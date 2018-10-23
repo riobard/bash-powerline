@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 
+if [ -z ${POWERLINE_KUBE+x} ]
+then
+  POWERLINE_KUBE=0
+fi
 ## Uncomment to disable git info
-#POWERLINE_KUBE=0
 #POWERLINE_GIT=0
 
 __powerline() {
     # Colorscheme
     readonly RESET='\[\033[m\]'
     readonly COLOR_CWD='\[\033[0;34m\]' # blue
-    readonly COLOR_KUBE='\[\033[0;35m\]' # light blue
+    readonly COLOR_KUBE='\[\033[0;35m\]' # violet
     readonly COLOR_GIT='\[\033[0;36m\]' # cyan
     readonly COLOR_SUCCESS='\[\033[0;32m\]' # green
     readonly COLOR_FAILURE='\[\033[0;31m\]' # red

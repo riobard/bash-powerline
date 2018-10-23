@@ -27,6 +27,12 @@ And source it in your `.bashrc`
 
     source ~/.bash-powerline.sh
 
+To enable `kubectl` context support, add the `POWERLINE_KUBE` variable to your
+profile before sourcing the script:
+
+    POWERLINE_KUBE=1
+    source ~/.bash-powerline.sh
+
 For best result, use [Solarized
 colorscheme](https://github.com/altercation/solarized) for your terminal
 emulator. Or hack your own colorscheme by modifying the script. It's really
