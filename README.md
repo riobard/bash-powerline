@@ -10,6 +10,7 @@ Powerline for Bash in pure Bash script.
 * Git: show "*" symbol with uncommited modifications.
 * Git: show "↑" symbol and number of commits ahead of remote.
 * Git: show "↓" symbol and number of commits behind remote.
+* Kubernetes: Show current-context
 * Platform-dependent prompt symbols.
 * Color-coded prompt symbol according to previous command execution status.
 * Use Bash builtin when possible to reduce delay. Delay sucks!
@@ -24,6 +25,12 @@ Download the Bash script
 
 And source it in your `.bashrc`
 
+    source ~/.bash-powerline.sh
+
+To enable `kubectl` context support, add the `POWERLINE_KUBE` variable to your
+profile before sourcing the script:
+
+    POWERLINE_KUBE=1
     source ~/.bash-powerline.sh
 
 For best result, use [Solarized
