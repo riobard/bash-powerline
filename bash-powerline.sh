@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
 ## Uncomment to disable git info
+#POWERLINE_KUBE=0
 #POWERLINE_GIT=0
 
 __powerline() {
     # Colorscheme
     readonly RESET='\[\033[m\]'
     readonly COLOR_CWD='\[\033[0;34m\]' # blue
+    readonly COLOR_KUBE='\[\033[0;35m\]' # light blue
     readonly COLOR_GIT='\[\033[0;36m\]' # cyan
     readonly COLOR_SUCCESS='\[\033[0;32m\]' # green
     readonly COLOR_FAILURE='\[\033[0;31m\]' # red
@@ -16,6 +18,8 @@ __powerline() {
     readonly SYMBOL_GIT_PUSH='↑'
     readonly SYMBOL_GIT_PULL='↓'
 
+    readonly SYMBOL_KUBE='❆'
+
     if [[ -z "$PS_SYMBOL" ]]; then
       case "$(uname)" in
           Darwin)   PS_SYMBOL='';;
@@ -24,6 +28,14 @@ __powerline() {
       esac
     fi
 
+    __kube_info() {
+      [[ $POWERLINE_KUBE = 0 ]] && return 0
+      hash kubectl 2>/dev/null || return # kubectl not found
+
+      # get current context
+      local ref=$(kubectl config current-context)
+      printf " $SYMBOL_KUBE $ref"
+    }
     __git_info() { 
         [[ $POWERLINE_GIT = 0 ]] && return # disabled
         hash git 2>/dev/null || return # git not found
@@ -75,14 +87,17 @@ __powerline() {
         # POC: https://github.com/njhartwell/pw3nage
         # Related fix in git-bash: https://github.com/git/git/blob/9d77b0405ce6b471cb5ce3a904368fc25e55643d/contrib/completion/git-prompt.sh#L324
         if shopt -q promptvars; then
+            __powerline_kube_info="$(__kube_info)"
             __powerline_git_info="$(__git_info)"
+            local kube="$COLOR_KUBE\${__powerline_kube_info}$RESET"
             local git="$COLOR_GIT\${__powerline_git_info}$RESET"
         else
             # promptvars is disabled. Avoid creating unnecessary env var.
+            local kube="$COLOR_KUBE$(__kube_info)$RESET"
             local git="$COLOR_GIT$(__git_info)$RESET"
         fi
 
-        PS1="$cwd$git$symbol"
+        PS1="$cwd$kube$git\n$symbol"
     }
 
     PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
