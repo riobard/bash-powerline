@@ -82,7 +82,13 @@ __powerline() {
             local git="$COLOR_GIT$(__git_info)$RESET"
         fi
 
-        PS1="$cwd$git$symbol"
+        if [ -n "$VIRTUAL_ENV" ]; then
+          local venv="$COLOR_GIT(`basename $VIRTUAL_ENV`)$RESET"
+          PS1="$venv $cwd$git$symbol"
+        else
+          PS1="$cwd$git$symbol"
+        fi
+
     }
 
     PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
