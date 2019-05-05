@@ -27,17 +27,20 @@ __powerline() {
     __git_info() { 
         [[ $POWERLINE_GIT = 0 ]] && return # disabled
         hash git 2>/dev/null || return # git not found
-        local git_eng="env LANG=C git"   # force git output in English to make our work easier
+        git_eng() {
+          # Force 'git' English output.
+          env LANG=C git "$@"
+        }
 
         # get current branch name
-        local ref=$($git_eng symbolic-ref --short HEAD 2>/dev/null)
+        local ref=$(git_eng symbolic-ref --short HEAD 2>/dev/null)
 
         if [[ -n "$ref" ]]; then
             # prepend branch symbol
             ref=$SYMBOL_GIT_BRANCH$ref
         else
             # get tag name or short unique hash
-            ref=$($git_eng describe --tags --always 2>/dev/null)
+            ref=$(git_eng describe --tags --always 2>/dev/null)
         fi
 
         [[ -n "$ref" ]] || return  # not a git repo
@@ -53,7 +56,7 @@ __powerline() {
                 marks="$SYMBOL_GIT_MODIFIED$marks"
                 break
             fi
-        done < <($git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
+        done < <(git_eng status --porcelain --branch 2>/dev/null)  # note the space between the two <
 
         # print the git branch segment without a trailing newline
         printf " $ref$marks"
