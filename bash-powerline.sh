@@ -83,7 +83,17 @@ __powerline() {
             local git="$COLOR_GIT$(__git_info)$COLOR_RESET"
         fi
 
-        PS1="$cwd$git$symbol"
+        # Checks to see if there is a virtual environment running by 
+        # seeing if the VIRTUAL_ENV environmental variable is set.
+        if [ ! -z $VIRTUAL_ENV ]; then
+          IFS='/' read -a array <<< $VIRTUAL_ENV
+          local venv="$COLOR_SUCCESS(${array[-1]})$COLOR_RESET "
+        else
+          local venv=""
+        fi
+
+        PS1="$venv$cwd$git$symbol"
+
     }
 
     PROMPT_COMMAND="ps1${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
